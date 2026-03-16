@@ -1,4 +1,5 @@
 /**
+ * @author swalker326
  * Configure OpenAuth to use [Cloudflare D1](https://developers.cloudflare.com/d1/) as a
  * storage adapter.
  *
