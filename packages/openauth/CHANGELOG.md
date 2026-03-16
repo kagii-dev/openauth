@@ -1,5 +1,11 @@
 # @kagii/openauth
 
+## 0.5.0
+
+### Minor Changes
+
+- Add a Cloudflare D1 storage adapter for OpenAuth deployments.
+
 ## 0.4.6
 
 ### Patch Changes

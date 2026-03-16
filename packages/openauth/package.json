@@ -1,6 +1,6 @@
 {
   "name": "@kagii/openauth",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "Community-maintained OpenAuth fork for standards-based auth servers",
   "license": "MIT",
   "type": "module",
