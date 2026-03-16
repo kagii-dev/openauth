@@ -1,5 +1,11 @@
 # @kagii/openauth
 
+## 0.5.1
+
+### Patch Changes
+
+- 5ae638b: Fix the `CodeUI.sendCode` TypeScript type so it can return `CodeProviderError` values just like the underlying code provider.
+
 ## 0.5.0
 
 ### Minor Changes
