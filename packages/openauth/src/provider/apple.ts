@@ -4,7 +4,7 @@
  * #### Using OAuth
  *
  * ```ts {5-8}
- * import { AppleProvider } from "@openauthjs/openauth/provider/apple"
+ * import { AppleProvider } from "@kagii/openauth/provider/apple"
  *
  * export default issuer({
  *   providers: {
@@ -21,7 +21,7 @@
  * When requesting name or email scopes from Apple, you must use form_post response mode:
  *
  * ```ts {5-9}
- * import { AppleProvider } from "@openauthjs/openauth/provider/apple"
+ * import { AppleProvider } from "@kagii/openauth/provider/apple"
  *
  * export default issuer({
  *   providers: {
@@ -37,7 +37,7 @@
  * #### Using OIDC
  *
  * ```ts {5-7}
- * import { AppleOidcProvider } from "@openauthjs/openauth/provider/apple"
+ * import { AppleOidcProvider } from "@kagii/openauth/provider/apple"
  *
  * export default issuer({
  *   providers: {

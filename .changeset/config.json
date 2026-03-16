@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.4/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": "./commit.cjs",
-  "fixed": [["@openauthjs/openauth"]],
+  "fixed": [["@kagii/openauth"]],
   "linked": [],
   "access": "public",
   "baseBranch": "master",

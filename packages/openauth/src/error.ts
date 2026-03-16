@@ -4,7 +4,7 @@
  * You can use these errors to check the type of error and handle it. For example.
  *
  * ```ts
- * import { InvalidAuthorizationCodeError } from "@openauthjs/openauth/error"
+ * import { InvalidAuthorizationCodeError } from "@kagii/openauth/error"
  *
  * if (err instanceof InvalidAuthorizationCodeError) {
  *   // handle invalid code error

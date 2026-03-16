@@ -2,7 +2,7 @@
  * Use this provider to authenticate with Discord.
  *
  * ```ts {5-8}
- * import { DiscordProvider } from "@openauthjs/openauth/provider/discord"
+ * import { DiscordProvider } from "@kagii/openauth/provider/discord"
  *
  * export default issuer({
  *   providers: {

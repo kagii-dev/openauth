@@ -2,7 +2,7 @@
  * Use this provider to authenticate with Spotify.
  *
  * ```ts {5-8}
- * import { SpotifyProvider } from "@openauthjs/openauth/provider/spotify"
+ * import { SpotifyProvider } from "@kagii/openauth/provider/spotify"
  *
  * export default issuer({
  *   providers: {

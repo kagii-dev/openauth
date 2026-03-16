@@ -2,7 +2,7 @@
  * Use this provider to authenticate with X.com.
  *
  * ```ts {5-8}
- * import { XProvider } from "@openauthjs/openauth/provider/x"
+ * import { XProvider } from "@kagii/openauth/provider/x"
  *
  * export default issuer({
  *   providers: {

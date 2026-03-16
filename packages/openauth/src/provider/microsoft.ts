@@ -4,7 +4,7 @@
  * #### Using OAuth
  *
  * ```ts {5-9}
- * import { MicrosoftProvider } from "@openauthjs/openauth/provider/microsoft"
+ * import { MicrosoftProvider } from "@kagii/openauth/provider/microsoft"
  *
  * export default issuer({
  *   providers: {
@@ -20,7 +20,7 @@
  * #### Using OIDC
  *
  * ```ts {5-7}
- * import { MicrosoftOidcProvider } from "@openauthjs/openauth/provider/microsoft"
+ * import { MicrosoftOidcProvider } from "@kagii/openauth/provider/microsoft"
  *
  * export default issuer({
  *   providers: {

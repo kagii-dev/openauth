@@ -8,7 +8,7 @@
  * This is useful for testing and development. It's not meant to be used in production.
  *
  * ```ts
- * import { MemoryStorage } from "@openauthjs/openauth/storage/memory"
+ * import { MemoryStorage } from "@kagii/openauth/storage/memory"
  *
  * const storage = MemoryStorage()
  *
