@@ -2,7 +2,7 @@
  * Configure OpenAuth to use [DynamoDB](https://aws.amazon.com/dynamodb/) as a storage adapter.
  *
  * ```ts
- * import { DynamoStorage } from "@openauthjs/openauth/storage/dynamo"
+ * import { DynamoStorage } from "@kagii/openauth/storage/dynamo"
  *
  * const storage = DynamoStorage({
  *   table: "my-table",

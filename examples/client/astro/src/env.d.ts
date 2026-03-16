@@ -1,4 +1,4 @@
-import type { SubjectPayload } from "@openauthjs/openauth/subject"
+import type { SubjectPayload } from "@kagii/openauth/subject"
 import { subjects } from "./auth"
 
 declare global {

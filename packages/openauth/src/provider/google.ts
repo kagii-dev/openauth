@@ -4,7 +4,7 @@
  * #### Using OAuth
  *
  * ```ts {5-8}
- * import { GoogleProvider } from "@openauthjs/openauth/provider/google"
+ * import { GoogleProvider } from "@kagii/openauth/provider/google"
  *
  * export default issuer({
  *   providers: {
@@ -19,7 +19,7 @@
  * #### Using OIDC
  *
  * ```ts {5-7}
- * import { GoogleOidcProvider } from "@openauthjs/openauth/provider/google"
+ * import { GoogleOidcProvider } from "@kagii/openauth/provider/google"
  *
  * export default issuer({
  *   providers: {

@@ -2,8 +2,8 @@
  * Configure the UI that's used by the Password provider.
  *
  * ```ts {1,7-12}
- * import { PasswordUI } from "@openauthjs/openauth/ui/password"
- * import { PasswordProvider } from "@openauthjs/openauth/provider/password"
+ * import { PasswordUI } from "@kagii/openauth/ui/password"
+ * import { PasswordProvider } from "@kagii/openauth/provider/password"
  *
  * export default issuer({
  *   providers: {

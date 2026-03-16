@@ -2,7 +2,7 @@
  * Use this provider to authenticate with a Cognito OAuth endpoint.
  *
  * ```ts {5-10}
- * import { CognitoProvider } from "@openauthjs/openauth/provider/cognito"
+ * import { CognitoProvider } from "@kagii/openauth/provider/cognito"
  *
  * export default issuer({
  *   providers: {

@@ -2,7 +2,7 @@
   "name": "@openauthjs/example-issuer-cloudflare",
   "version": "0.0.0",
   "dependencies": {
-    "@openauthjs/openauth": "workspace:*",
+    "@kagii/openauth": "workspace:*",
     "sst": "3.5.1"
   }
 }

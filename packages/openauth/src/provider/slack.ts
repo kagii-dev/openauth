@@ -2,7 +2,7 @@
  * Use this provider to authenticate with Slack.
  *
  * ```ts {5-10}
- * import { SlackProvider } from "@openauthjs/openauth/provider/slack"
+ * import { SlackProvider } from "@kagii/openauth/provider/slack"
  *
  * export default issuer({
  *   providers: {

@@ -582,7 +582,7 @@ function renderType(type: TypeDoc.SomeType): Text {
   // Special handle hard-to-document types
   if (
     type.type === "reference" &&
-    type.package === "@openauthjs/openauth" &&
+    type.package === "@kagii/openauth" &&
     type.qualifiedName === "IssuerInput.Result"
   )
     return `<code class="type">${type.name}</code>`
@@ -604,7 +604,7 @@ function renderType(type: TypeDoc.SomeType): Text {
   if (type.type === "array") return renderArrayType(type)
   if (type.type === "reference") {
     if (type.package === "typescript") return renderTypescriptType(type)
-    if (type.package === "@openauthjs/openauth") return renderOpenAuthType(type)
+    if (type.package === "@kagii/openauth") return renderOpenAuthType(type)
     if (type.package === "@standard-schema/spec")
       return renderStandardSchemaType(type)
     return `<code class="type">${type.name}</code>`

@@ -3,7 +3,7 @@
  * storage adapter.
  *
  * ```ts
- * import { CloudflareStorage } from "@openauthjs/openauth/storage/cloudflare"
+ * import { CloudflareStorage } from "@kagii/openauth/storage/cloudflare"
  *
  * const storage = CloudflareStorage({
  *   namespace: "my-namespace"

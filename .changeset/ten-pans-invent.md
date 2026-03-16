@@ -1,5 +1,5 @@
 ---
-"@openauthjs/openauth": patch
+"@kagii/openauth": patch
 ---
 
 add linkedin adapter

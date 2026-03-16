@@ -8,7 +8,8 @@
     "examples/client/*"
   ],
   "scripts": {
-    "release": "bun run --filter=\"@openauthjs/openauth\" build && changeset publish"
+    "release": "bun run --filter=\"@kagii/openauth\" build && changeset publish",
+    "publish:fork": "bun run --filter=\"@kagii/openauth\" build && npm publish -w packages/openauth"
   },
   "devDependencies": {
     "@tsconfig/node22": "22.0.0",

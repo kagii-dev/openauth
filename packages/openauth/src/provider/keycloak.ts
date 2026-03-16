@@ -2,7 +2,7 @@
  * Use this provider to authenticate with a Keycloak server.
  *
  * ```ts {5-10}
- * import { KeycloakProvider } from "@openauthjs/openauth/provider/keycloak"
+ * import { KeycloakProvider } from "@kagii/openauth/provider/keycloak"
  *
  * export default issuer({
  *   providers: {

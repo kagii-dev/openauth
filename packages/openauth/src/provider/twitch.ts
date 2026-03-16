@@ -2,7 +2,7 @@
  * Use this provider to authenticate with Twitch.
  *
  * ```ts {5-8}
- * import { TwitchProvider } from "@openauthjs/openauth/provider/twitch"
+ * import { TwitchProvider } from "@kagii/openauth/provider/twitch"
  *
  * export default issuer({
  *   providers: {

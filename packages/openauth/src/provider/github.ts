@@ -2,7 +2,7 @@
  * Use this provider to authenticate with Github.
  *
  * ```ts {5-8}
- * import { GithubProvider } from "@openauthjs/openauth/provider/github"
+ * import { GithubProvider } from "@kagii/openauth/provider/github"
  *
  * export default issuer({
  *   providers: {

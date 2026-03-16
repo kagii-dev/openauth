@@ -1,6 +1,8 @@
 {
-  "name": "@openauthjs/openauth",
-  "version": "0.4.3",
+  "name": "@kagii/openauth",
+  "version": "0.4.4",
+  "description": "Community-maintained OpenAuth fork for standards-based auth servers",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "build": "bun run script/build.ts",
@@ -42,5 +44,14 @@
   "files": [
     "src",
     "dist"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kagii-dev/openauth.git",
+    "directory": "packages/openauth"
+  },
+  "homepage": "https://github.com/kagii-dev/openauth#readme"
 }

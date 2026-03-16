@@ -1,5 +1,5 @@
 import type { Service } from "@cloudflare/workers-types"
-import { createClient } from "@openauthjs/openauth/client"
+import { createClient } from "@kagii/openauth/client"
 import { subjects } from "../../subjects"
 
 interface Env {

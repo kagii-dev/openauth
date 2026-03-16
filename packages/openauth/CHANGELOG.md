@@ -1,4 +1,4 @@
-# @openauthjs/openauth
+# @kagii/openauth
 
 ## 0.4.3
 
