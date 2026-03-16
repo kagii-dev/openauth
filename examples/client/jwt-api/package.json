@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@openauthjs/openauth": "workspace:*"
+    "@kagii/openauth": "workspace:*"
   }
 }

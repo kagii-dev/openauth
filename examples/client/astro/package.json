@@ -9,7 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@openauthjs/openauth": "workspace:*",
+    "@kagii/openauth": "workspace:*",
     "astro": "5.0.2"
   }
 }

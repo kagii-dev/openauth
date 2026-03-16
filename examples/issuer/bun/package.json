@@ -2,6 +2,6 @@
   "name": "@openauthjs/example-issuer-bun",
   "version": "0.0.0",
   "dependencies": {
-    "@openauthjs/openauth": "workspace:*"
+    "@kagii/openauth": "workspace:*"
   }
 }

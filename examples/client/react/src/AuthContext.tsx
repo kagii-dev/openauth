@@ -6,7 +6,7 @@ import {
   useContext,
   createContext,
 } from "react"
-import { createClient } from "@openauthjs/openauth/client"
+import { createClient } from "@kagii/openauth/client"
 
 const client = createClient({
   clientID: "react",
