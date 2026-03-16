@@ -37,7 +37,9 @@ class EventuallyConsistentStorage implements StorageAdapter {
     this.data.delete(JSON.stringify(key))
   }
 
-  async *scan(prefix: string[]): AsyncGenerator<[string[], any], void, unknown> {
+  async *scan(
+    prefix: string[],
+  ): AsyncGenerator<[string[], any], void, unknown> {
     const prefixStr = JSON.stringify(prefix).slice(0, -1) // Remove trailing ]
 
     for (const [key, value] of this.data.entries()) {
@@ -85,7 +87,9 @@ class CountingStorage implements StorageAdapter {
     this.data.delete(JSON.stringify(key))
   }
 
-  async *scan(prefix: string[]): AsyncGenerator<[string[], any], void, unknown> {
+  async *scan(
+    prefix: string[],
+  ): AsyncGenerator<[string[], any], void, unknown> {
     const prefixStr = JSON.stringify(prefix).slice(0, -1)
     for (const [key, value] of this.data.entries()) {
       if (key.startsWith(prefixStr)) {
@@ -180,7 +184,9 @@ describe("encryptionKeys", () => {
 
     // Verify the key is actually persisted
     storage.makeConsistent()
-    const persistedKeys = await Array.fromAsync(storage.scan(["encryption:key"]))
+    const persistedKeys = await Array.fromAsync(
+      storage.scan(["encryption:key"]),
+    )
     expect(persistedKeys).toHaveLength(1)
   })
 
