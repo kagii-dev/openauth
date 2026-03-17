@@ -6,7 +6,11 @@
   "type": "module",
   "scripts": {
     "build": "bun run script/build.ts",
-    "test": "bun test"
+    "ci": "biome ci .",
+    "check": "biome check .",
+    "check:write": "biome check --write .",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "sideEffects": false,
   "devDependencies": {

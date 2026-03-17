@@ -1,14 +1,14 @@
 import {
-  CryptoKey,
+  type CryptoKey,
   exportJWK,
   exportPKCS8,
   exportSPKI,
   generateKeyPair,
   importPKCS8,
   importSPKI,
-  JWK,
+  type JWK,
 } from "jose"
-import { Storage, StorageAdapter } from "./storage/storage.js"
+import { Storage, type StorageAdapter } from "./storage/storage.js"
 
 const signingAlg = "ES256"
 const encryptionAlg = "RSA-OAEP-512"

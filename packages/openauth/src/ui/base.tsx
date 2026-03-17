@@ -1,6 +1,6 @@
-import { PropsWithChildren } from "hono/jsx"
-import css from "./ui.css" assert { type: "text" }
+import type { PropsWithChildren } from "hono/jsx"
 import { getTheme } from "./theme.js"
+import css from "./ui.css" with { type: "text" }
 
 export function Layout(
   props: PropsWithChildren<{

@@ -28,9 +28,10 @@
  *
  * @packageDocumentation
  */
-import { joinKey, splitKey, StorageAdapter } from "./storage.js"
+
 import { existsSync, readFileSync } from "node:fs"
 import { writeFile } from "node:fs/promises"
+import { joinKey, type StorageAdapter, splitKey } from "./storage.js"
 
 /**
  * Configure the memory store.

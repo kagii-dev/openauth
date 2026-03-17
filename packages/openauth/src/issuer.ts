@@ -124,13 +124,14 @@
  *
  * @packageDocumentation
  */
-import { Provider, ProviderOptions } from "./provider/provider.js"
-import { SubjectPayload, SubjectSchema } from "./subject.js"
-import { Hono } from "hono/tiny"
-import { handle as awsHandle } from "hono/aws-lambda"
-import { Context } from "hono"
-import { deleteCookie, getCookie, setCookie } from "hono/cookie"
+
 import type { v1 } from "@standard-schema/spec"
+import type { Context } from "hono"
+import { handle as awsHandle } from "hono/aws-lambda"
+import { deleteCookie, getCookie, setCookie } from "hono/cookie"
+import { Hono } from "hono/tiny"
+import type { Provider, ProviderOptions } from "./provider/provider.js"
+import type { SubjectPayload, SubjectSchema } from "./subject.js"
 
 /**
  * Sets the subject payload in the JWT token and returns the response.
@@ -185,23 +186,23 @@ export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
 
+import { cors } from "hono/cors"
+import { logger } from "hono/logger"
+import { CompactEncrypt, compactDecrypt, jwtVerify, SignJWT } from "jose"
 import {
   MissingParameterError,
   OauthError,
   UnauthorizedClientError,
   UnknownStateError,
 } from "./error.js"
-import { compactDecrypt, CompactEncrypt, jwtVerify, SignJWT } from "jose"
-import { Storage, StorageAdapter } from "./storage/storage.js"
 import { encryptionKeys, legacySigningKeys, signingKeys } from "./keys.js"
 import { validatePKCE } from "./pkce.js"
-import { Select } from "./ui/select.js"
-import { setTheme, Theme } from "./ui/theme.js"
-import { getRelativeUrl, isDomainMatch, lazy } from "./util.js"
 import { DynamoStorage } from "./storage/dynamo.js"
 import { MemoryStorage } from "./storage/memory.js"
-import { cors } from "hono/cors"
-import { logger } from "hono/logger"
+import { Storage, type StorageAdapter } from "./storage/storage.js"
+import { Select } from "./ui/select.js"
+import { setTheme, type Theme } from "./ui/theme.js"
+import { getRelativeUrl, isDomainMatch, lazy } from "./util.js"
 
 /** @internal */
 export const aws = awsHandle
@@ -454,14 +455,13 @@ export function issuer<
 >(input: IssuerInput<Providers, Subjects, Result>) {
   const error =
     input.error ??
-    function (err) {
-      return new Response(err.message, {
+    ((err) =>
+      new Response(err.message, {
         status: 400,
         headers: {
           "Content-Type": "text/plain",
         },
-      })
-    }
+      }))
   const ttlAccess = input.ttl?.access ?? 60 * 60 * 24 * 30
   const ttlRefresh = input.ttl?.refresh ?? 60 * 60 * 24 * 365
   const ttlRefreshReuse = input.ttl?.reuse ?? 60

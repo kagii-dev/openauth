@@ -20,7 +20,7 @@
  */
 
 import { client } from "./aws.js"
-import { joinKey, StorageAdapter } from "./storage.js"
+import { joinKey, type StorageAdapter } from "./storage.js"
 
 /**
  * Configure the DynamoDB table that's created.
@@ -157,7 +157,7 @@ export function DynamoStorage(options: DynamoStorageOptions): StorageAdapter {
       const prefixPk =
         prefix.length >= 2 ? joinKey(prefix.slice(0, 2)) : prefix[0]
       const prefixSk = prefix.length > 2 ? joinKey(prefix.slice(2)) : ""
-      let lastEvaluatedKey = undefined
+      let lastEvaluatedKey: Record<string, unknown> | undefined
       const now = Date.now() / 1000
       while (true) {
         const params = {

@@ -33,8 +33,8 @@
  * @packageDocumentation
  */
 
-import { Oauth2Provider, Oauth2WrappedConfig } from "./oauth2.js"
-import { OidcProvider, OidcWrappedConfig } from "./oidc.js"
+import { Oauth2Provider, type Oauth2WrappedConfig } from "./oauth2.js"
+import { OidcProvider, type OidcWrappedConfig } from "./oidc.js"
 
 export interface FacebookConfig extends Oauth2WrappedConfig {}
 export interface FacebookOidcConfig extends OidcWrappedConfig {}

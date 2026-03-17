@@ -24,8 +24,11 @@
  */
 /** @jsxImportSource hono/jsx */
 
-import { CodeProviderError, CodeProviderOptions } from "../provider/code.js"
 import { UnknownStateError } from "../error.js"
+import type {
+  CodeProviderError,
+  CodeProviderOptions,
+} from "../provider/code.js"
 import { Layout } from "./base.js"
 import { FormAlert } from "./form.js"
 

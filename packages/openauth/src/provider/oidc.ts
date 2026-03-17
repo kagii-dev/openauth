@@ -18,12 +18,12 @@
  * @packageDocumentation
  */
 
-import { createLocalJWKSet, JSONWebKeySet, jwtVerify } from "jose"
-import { WellKnown } from "../client.js"
+import type { JWTPayload } from "hono/utils/jwt/types"
+import { createLocalJWKSet, type JSONWebKeySet, jwtVerify } from "jose"
+import type { WellKnown } from "../client.js"
 import { OauthError } from "../error.js"
-import { Provider } from "./provider.js"
-import { JWTPayload } from "hono/utils/jwt/types"
 import { getRelativeUrl, lazy } from "../util.js"
+import type { Provider } from "./provider.js"
 
 export interface OidcConfig {
   /**

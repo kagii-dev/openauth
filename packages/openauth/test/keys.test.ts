@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { signingKeys, encryptionKeys } from "../src/keys.js"
+import { encryptionKeys, signingKeys } from "../src/keys.js"
 import type { StorageAdapter } from "../src/storage/storage.js"
 
 /**
@@ -20,7 +20,7 @@ class EventuallyConsistentStorage implements StorageAdapter {
     return this.data.get(JSON.stringify(key))
   }
 
-  async set(key: string[], value: any, expiry?: Date | number) {
+  async set(key: string[], value: any, _expiry?: Date | number) {
     const keyStr = JSON.stringify(key)
     this.data.set(keyStr, value)
 
@@ -77,7 +77,7 @@ class CountingStorage implements StorageAdapter {
     return this.data.get(JSON.stringify(key))
   }
 
-  async set(key: string[], value: any, expiry?: Date | number) {
+  async set(key: string[], value: any, _expiry?: Date | number) {
     this.setCallCount++
     this.data.set(JSON.stringify(key), value)
     return undefined

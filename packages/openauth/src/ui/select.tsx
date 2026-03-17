@@ -69,7 +69,7 @@ export function Select(props?: SelectProps) {
         <div data-component="form">
           {Object.entries(providers).map(([key, type]) => {
             const match = props?.providers?.[key]
-            if (match?.hide) return
+            if (match?.hide) return null
             const icon = ICON[key]
             return (
               <a

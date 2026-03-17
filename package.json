@@ -8,16 +8,26 @@
     "examples/client/*"
   ],
   "scripts": {
+    "check:ci": "bun run --filter './packages/**' --if-present ci",
+    "check": "bun run --filter './packages/**' --if-present check",
+    "check:write": "bun run --filter './packages/**' --if-present check:write",
+    "prepare": "simple-git-hooks",
     "release": "bun run --filter=\"@kagii/openauth\" build && changeset publish",
-    "publish:fork": "bun run --filter=\"@kagii/openauth\" build && npm publish -w packages/openauth"
+    "publish:fork": "bun run --filter=\"@kagii/openauth\" build && npm publish -w packages/openauth",
+    "test": "bun run --filter './packages/**' test",
+    "typecheck": "bun run --filter './packages/**' --if-present typecheck"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.7",
     "@tsconfig/node22": "22.0.0",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "simple-git-hooks": "2.13.1"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "bun run check:write && git add -A"
   },
   "dependencies": {
     "@changesets/cli": "2.27.10",
-    "prettier": "3.4.2",
     "typescript": "5.6.3"
   },
   "private": true
