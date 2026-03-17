@@ -1,5 +1,5 @@
 /**
- * The `issuer` create an OpentAuth server, a [Hono](https://hono.dev) app that's
+ * The `issuer` creates an OpenAuth server, a [Hono](https://hono.dev) app that's
  * designed to run anywhere.
  *
  * The `issuer` function requires a few things:
@@ -93,7 +93,7 @@
  *
  * #### Deploy
  *
- * Since `issuer` is a Hono app, you can deploy it anywhere Hono supports.
+ * Since `issuer` is a Hono app, you can deploy it anywhere that supports Hono.
  *
  * <Tabs>
  *   <TabItem label="Node">
@@ -975,7 +975,7 @@ export function issuer<
         const response = await match.client({
           clientID: clientID.toString(),
           clientSecret: clientSecret.toString(),
-          params: Object.fromEntries(form) as Record<string, string>,
+          params: Object.fromEntries(form.entries()),
         })
         return input.success(
           {
