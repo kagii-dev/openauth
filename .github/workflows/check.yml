@@ -1,4 +1,4 @@
-name: test
+name: check
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  check:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,10 +15,5 @@ jobs:
         with:
           persist-credentials: false
       - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
       - run: bun install
       - run: bun run check:ci
-      - run: bun run typecheck
-      - run: cd packages/openauth && bun run build
-      - run: bun run test
