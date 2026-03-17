@@ -972,10 +972,18 @@ export function issuer<
           return c.json({ error: "missing `client_id` form value" }, 400)
         if (!clientSecret)
           return c.json({ error: "missing `client_secret` form value" }, 400)
+
+        const params: Record<string, string> = {}
+        for (const [key, value] of form.entries()) {
+          if (typeof value === "string") {
+            params[key] = value.toString()
+          }
+        }
+
         const response = await match.client({
           clientID: clientID.toString(),
           clientSecret: clientSecret.toString(),
-          params: Object.fromEntries(form.entries()),
+          params,
         })
         return input.success(
           {

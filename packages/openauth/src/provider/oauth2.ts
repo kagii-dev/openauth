@@ -183,7 +183,11 @@ export function Oauth2Provider(
 
     let idTokenPayload: Record<string, any> | null = null
     if (config.endpoint.jwks) {
-      const jwksEndpoint = new URL(config.endpoint.jwks)
+      // jose types this as a web URL, but this package compiles with Node-only
+      // libs, so we narrow-cast the equivalent runtime URL just at this call site.
+      type RemoteJWKSetUrl = Parameters<typeof createRemoteJWKSet>[0]
+      const jwksEndpoint = new URL(config.endpoint.jwks) as RemoteJWKSetUrl
+
       const jwks = createRemoteJWKSet(jwksEndpoint)
       const { payload } = await jwtVerify(json.id_token, jwks, {
         audience: config.clientID,
