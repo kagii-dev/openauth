@@ -26,7 +26,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose"
 import { OauthError } from "../error.js"
 import { generatePKCE } from "../pkce.js"
 import { getRelativeUrl } from "../util.js"
-import { Provider } from "./provider.js"
+import type { Provider } from "./provider.js"
 
 export interface Oauth2Config {
   /**

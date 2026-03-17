@@ -1,5 +1,5 @@
 import type { Context, Hono } from "hono"
-import { StorageAdapter } from "../storage/storage.js"
+import type { StorageAdapter } from "../storage/storage.js"
 
 export type ProviderRoute = Hono
 

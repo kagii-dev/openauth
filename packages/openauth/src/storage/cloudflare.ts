@@ -19,7 +19,7 @@
  * @packageDocumentation
  */
 import type { KVNamespace } from "@cloudflare/workers-types"
-import { joinKey, splitKey, StorageAdapter } from "./storage.js"
+import { joinKey, type StorageAdapter, splitKey } from "./storage.js"
 
 /**
  * Minimal KV surface used by this adapter. Kept intentionally loose so it

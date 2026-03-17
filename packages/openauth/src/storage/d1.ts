@@ -24,7 +24,7 @@
  * @packageDocumentation
  */
 import type { D1Database } from "@cloudflare/workers-types"
-import { joinKey, splitKey, StorageAdapter } from "./storage.js"
+import { joinKey, type StorageAdapter, splitKey } from "./storage.js"
 
 /**
  * Configure the D1 database.

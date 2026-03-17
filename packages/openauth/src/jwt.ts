@@ -1,4 +1,4 @@
-import { CryptoKey, JWTPayload, jwtVerify, SignJWT } from "jose"
+import { type CryptoKey, type JWTPayload, jwtVerify, SignJWT } from "jose"
 
 export namespace jwt {
   export function create(

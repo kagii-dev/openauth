@@ -1,4 +1,4 @@
-import { Glob, $ } from "bun"
+import { $, Glob } from "bun"
 import pkg from "../package.json"
 
 await $`rm -rf dist`

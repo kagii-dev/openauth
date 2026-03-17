@@ -38,15 +38,15 @@
  *
  * @packageDocumentation
  */
+
+import type { v1 } from "@standard-schema/spec"
 import {
   createLocalJWKSet,
-  errors,
-  JSONWebKeySet,
-  jwtVerify,
   decodeJwt,
+  errors,
+  type JSONWebKeySet,
+  jwtVerify,
 } from "jose"
-import { SubjectSchema } from "./subject.js"
-import type { v1 } from "@standard-schema/spec"
 import {
   InvalidAccessTokenError,
   InvalidAuthorizationCodeError,
@@ -54,6 +54,7 @@ import {
   InvalidSubjectError,
 } from "./error.js"
 import { generatePKCE } from "./pkce.js"
+import type { SubjectSchema } from "./subject.js"
 
 /**
  * The well-known information for an OAuth 2.0 authorization server.
@@ -655,7 +656,7 @@ export function createClient(input: ClientInput): Client {
       refresh: string,
       opts?: RefreshOptions,
     ): Promise<RefreshSuccess | RefreshError> {
-      if (opts && opts.access) {
+      if (opts?.access) {
         const decoded = decodeJwt(opts.access)
         if (!decoded) {
           return {

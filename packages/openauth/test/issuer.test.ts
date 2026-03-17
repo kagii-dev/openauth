@@ -1,17 +1,17 @@
 import {
-  expect,
-  test,
-  setSystemTime,
-  describe,
-  beforeEach,
   afterEach,
+  beforeEach,
+  describe,
+  expect,
+  setSystemTime,
+  test,
 } from "bun:test"
 import { object, string } from "valibot"
-import { issuer } from "../src/issuer.js"
 import { createClient } from "../src/client.js"
-import { createSubjects } from "../src/subject.js"
+import { issuer } from "../src/issuer.js"
+import type { Provider } from "../src/provider/provider.js"
 import { MemoryStorage } from "../src/storage/memory.js"
-import { Provider } from "../src/provider/provider.js"
+import { createSubjects } from "../src/subject.js"
 
 const subjects = createSubjects({
   user: object({
@@ -19,7 +19,7 @@ const subjects = createSubjects({
   }),
 })
 
-let storage = MemoryStorage()
+const storage = MemoryStorage()
 const issuerConfig = {
   storage,
   subjects,
@@ -216,7 +216,7 @@ describe("refresh token", () => {
 
   test("success", async () => {
     setSystemTime(Date.now() + 1000 * 60 + 1000)
-    let response = await requestRefreshToken(tokens.refresh)
+    const response = await requestRefreshToken(tokens.refresh)
     expect(response.status).toBe(200)
     const refreshed = await response.json()
     expect(refreshed).toStrictEqual({
@@ -242,7 +242,7 @@ describe("refresh token", () => {
   test("success with valid access token", async () => {
     // have to increment the time so new access token claims are different (i.e. exp)
     setSystemTime(Date.now() + 1000)
-    let response = await requestRefreshToken(tokens.refresh)
+    const response = await requestRefreshToken(tokens.refresh)
     expect(response.status).toBe(200)
     const refreshed = await response.json()
     expect(refreshed).toStrictEqual({
@@ -327,14 +327,14 @@ describe("refresh token", () => {
 
   test("expired failure", async () => {
     setSystemTime(Date.now() + 1000 * 6000 + 1000)
-    let response = await requestRefreshToken(tokens.refresh)
+    const response = await requestRefreshToken(tokens.refresh)
     expect(response.status).toBe(400)
     const reused = await response.json()
     expect(reused.error).toBe("invalid_grant")
   })
 
   test("missing failure", async () => {
-    let response = await requestRefreshToken("")
+    const response = await requestRefreshToken("")
     expect(response.status).toBe(400)
     const reused = await response.json()
     expect(reused.error).toBe("invalid_request")

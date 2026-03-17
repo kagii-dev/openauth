@@ -1,9 +1,9 @@
 import { expect, test } from "bun:test"
+import { object, string } from "valibot"
+import { createClient } from "../src/client.js"
 import { issuer } from "../src/issuer.js"
 import { MemoryStorage } from "../src/storage/memory.js"
-import { object, string } from "valibot"
 import { createSubjects } from "../src/subject.js"
-import { createClient } from "../src/client.js"
 
 const subjects = createSubjects({
   user: object({

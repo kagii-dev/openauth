@@ -1,21 +1,21 @@
 import {
-  expect,
-  test,
-  setSystemTime,
-  describe,
-  beforeEach,
-  afterEach,
-  spyOn,
   afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
   mock,
+  setSystemTime,
+  spyOn,
+  test,
 } from "bun:test"
 import { object, string } from "valibot"
-import { issuer } from "../src/issuer.js"
 import { createClient } from "../src/client.js"
 import {
   InvalidAccessTokenError,
   InvalidRefreshTokenError,
 } from "../src/error.js"
+import { issuer } from "../src/issuer.js"
 import { MemoryStorage } from "../src/storage/memory.js"
 import { createSubjects } from "../src/subject.js"
 
@@ -25,7 +25,7 @@ const subjects = createSubjects({
   }),
 })
 
-let storage = MemoryStorage()
+const storage = MemoryStorage()
 const auth = issuer({
   storage,
   subjects,

@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { Context } from "hono"
+import type { Context } from "hono"
 import { getRelativeUrl, isDomainMatch } from "../src/util.js"
 
 test("isDomainMatch", () => {

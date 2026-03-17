@@ -52,9 +52,9 @@
  *
  * @packageDocumentation
  */
-import { Context } from "hono"
-import { Provider } from "./provider.js"
+import type { Context } from "hono"
 import { generateUnbiasedDigits, timingSafeCompare } from "../random.js"
+import type { Provider } from "./provider.js"
 
 export interface CodeProviderConfig<
   Claims extends Record<string, string> = Record<string, string>,

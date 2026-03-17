@@ -1,8 +1,8 @@
 import type { OAuth2Tokens } from "arctic"
-import { Context } from "hono"
-import { Provider } from "./provider.js"
+import type { Context } from "hono"
 import { OauthError } from "../error.js"
 import { getRelativeUrl } from "../util.js"
+import type { Provider } from "./provider.js"
 
 export interface ArcticProviderOptions {
   scopes: string[]

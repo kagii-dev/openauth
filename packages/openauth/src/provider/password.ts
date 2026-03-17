@@ -37,11 +37,12 @@
  *
  * @packageDocumentation
  */
+
+import type { v1 } from "@standard-schema/spec"
 import { UnknownStateError } from "../error.js"
-import { Storage } from "../storage/storage.js"
-import { Provider } from "./provider.js"
 import { generateUnbiasedDigits, timingSafeCompare } from "../random.js"
-import { v1 } from "@standard-schema/spec"
+import { Storage } from "../storage/storage.js"
+import type { Provider } from "./provider.js"
 
 /**
  * @internal
@@ -422,7 +423,7 @@ export function PasswordProvider(
       })
 
       routes.get("/change", async (c) => {
-        let redirect =
+        const redirect =
           c.req.query("redirect_uri") || getRelativeUrl(c, "./authorize")
         const state: PasswordChangeState = {
           type: "start",
@@ -537,10 +538,10 @@ export function PasswordProvider(
   }
 }
 
-import * as jose from "jose"
 import { TextEncoder } from "node:util"
+import * as jose from "jose"
 
-interface HashedPassword {}
+type HashedPassword = {}
 
 /**
  * @internal
@@ -604,7 +605,8 @@ export function PBKDF2Hasher(opts?: { iterations?: number }): PasswordHasher<{
     },
   }
 }
-import { timingSafeEqual, randomBytes, scrypt } from "node:crypto"
+
+import { randomBytes, scrypt, timingSafeEqual } from "node:crypto"
 import { getRelativeUrl } from "../util.js"
 
 /**

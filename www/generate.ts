@@ -905,7 +905,7 @@ async function build() {
 }
 
 function print(type: TypeDoc.SomeType) {
-  // @ts-ignore
+  // @ts-expect-error
   delete type._project
   console.log(type)
 }
