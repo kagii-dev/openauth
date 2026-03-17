@@ -173,7 +173,7 @@ export function CodeProvider<
         const action = fd.get("action")?.toString()
 
         if (action === "request" || action === "resend") {
-          const claims = Object.fromEntries(fd) as Claims
+          const claims = Object.fromEntries(fd.entries()) as Claims
           delete claims.action
           const err = await config.sendCode(claims, code)
           if (err) return transition(c, { type: "start" }, fd, err)

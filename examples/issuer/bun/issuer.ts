@@ -1,4 +1,4 @@
-import { issuer } from "@kagii/openauth"
+import { issuer } from "@kagii/openauth/issuer"
 import { MemoryStorage } from "@kagii/openauth/storage/memory"
 import { PasswordProvider } from "@kagii/openauth/provider/password"
 import { PasswordUI } from "@kagii/openauth/ui/password"

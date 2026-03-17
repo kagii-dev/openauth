@@ -1,4 +1,5 @@
 import {
+  CryptoKey,
   exportJWK,
   exportPKCS8,
   exportSPKI,
@@ -6,7 +7,6 @@ import {
   importPKCS8,
   importSPKI,
   JWK,
-  KeyLike,
 } from "jose"
 import { Storage, StorageAdapter } from "./storage/storage.js"
 
@@ -25,8 +25,8 @@ interface SerializedKeyPair {
 export interface KeyPair {
   id: string
   alg: string
-  public: KeyLike
-  private: KeyLike
+  public: CryptoKey
+  private: CryptoKey
   created: Date
   expired?: Date
   jwk: JWK
