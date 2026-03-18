@@ -1,5 +1,11 @@
 # @kagii/openauth
 
+## 0.5.2
+
+### Patch Changes
+
+- 0ef6860: Patch release for the redirect URI validation hardening merged in `#17`, including safer error handling for invalid redirect URIs and request-local authorization precedence over stale cookies.
+
 ## 0.5.1
 
 ### Patch Changes
