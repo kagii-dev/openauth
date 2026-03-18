@@ -1,15 +1,13 @@
 {
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ESNext.Array", "ES2021"],
     "outDir": "dist",
     "declaration": true,
     "skipLibCheck": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-    "types": ["@types/node"]
+    "jsxImportSource": "hono/jsx"
   },
   "include": ["src"]
 }
