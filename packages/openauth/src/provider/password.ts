@@ -555,7 +555,7 @@ export function PBKDF2Hasher(opts?: { iterations?: number }): PasswordHasher<{
   return {
     async hash(password) {
       const encoder = new TextEncoder()
-      const bytes = encoder.encode(password) as Uint8Array<ArrayBuffer>
+      const bytes = encoder.encode(password)
       const salt = crypto.getRandomValues(new Uint8Array(16))
       const keyMaterial = await crypto.subtle.importKey(
         "raw",
@@ -584,7 +584,7 @@ export function PBKDF2Hasher(opts?: { iterations?: number }): PasswordHasher<{
     },
     async verify(password, compare) {
       const encoder = new TextEncoder()
-      const passwordBytes = encoder.encode(password) as Uint8Array<ArrayBuffer>
+      const passwordBytes = encoder.encode(password)
       const salt = jose.base64url.decode(compare.salt)
       const params = {
         name: "PBKDF2",
