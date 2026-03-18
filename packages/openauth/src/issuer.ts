@@ -1166,7 +1166,7 @@ export function issuer<
         error: "invalid_token",
         error_description: "Invalid token",
       })
-    } catch (e) {
+    } catch (_e) {
       return c.json(
         {
           error: "invalid_token",
