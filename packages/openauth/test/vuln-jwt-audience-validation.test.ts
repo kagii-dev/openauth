@@ -32,18 +32,6 @@ const subjects = createSubjects({
 
 let storage = MemoryStorage()
 
-function decodeTokenPayload(token: string) {
-  const parts = token.split(".")
-  const payload = JSON.parse(atob(parts[1]))
-  return payload as {
-    aud?: string
-    iss: string
-    sub: string
-    exp: number
-    mode: string
-  }
-}
-
 describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
   let auth: ReturnType<typeof issuer>
   let clientA: ReturnType<typeof createClient>
