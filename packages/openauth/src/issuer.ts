@@ -632,7 +632,7 @@ export function issuer<
 
   async function getAuthorization(ctx: Context) {
     const match =
-      (await auth.get(ctx, "authorization")) || ctx.get("authorization")
+      ctx.get("authorization") || (await auth.get(ctx, "authorization"))
     if (!match) throw new UnknownStateError()
     return match as AuthorizationState
   }

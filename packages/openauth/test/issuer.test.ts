@@ -158,7 +158,7 @@ describe("error handling (same-request)", () => {
 })
 
 describe("authorization precedence", () => {
-  test("cookie wins over request-local when both are present", async () => {
+  test("request-local authorization wins over stale cookie when both are present", async () => {
     // 1) Create a stale authorization cookie pointing to old.example.com
     const staleIssuer = issuer(issuerConfig)
     const staleClient = createClient({
@@ -199,11 +199,11 @@ describe("authorization precedence", () => {
       headers: { cookie: staleCookie },
     })
 
-    // If cookie has precedence, we should be redirected to the OLD callback
+    // The current request-local authorization should win over the stale cookie
     expect(res.status).toBe(302)
     const location = new URL(res.headers.get("location")!)
     expect(location.origin + location.pathname).toBe(
-      "https://old.example.com/callback",
+      "https://new.example.com/callback",
     )
   })
 })
