@@ -8,7 +8,7 @@ import {
 } from "bun:test"
 import { object, string } from "valibot"
 import { createClient } from "../src/client.js"
-import { issuer } from "../src/issuer.js"
+import { type IssuerInput, issuer } from "../src/issuer.js"
 import type { Provider } from "../src/provider/provider.js"
 import { MemoryStorage } from "../src/storage/memory.js"
 import { createSubjects } from "../src/subject.js"
@@ -20,15 +20,18 @@ const subjects = createSubjects({
 })
 
 const storage = MemoryStorage()
-const issuerConfig = {
+const issuerConfig: IssuerInput<
+  { dummy: Provider<{ email: string }> },
+  typeof subjects
+> = {
   storage,
   subjects,
   allow: async () => true,
   ttl: {
     access: 60,
     refresh: 6000,
-    refreshReuse: 60,
-    refreshRetention: 6000,
+    reuse: 60,
+    retention: 6000,
   },
   providers: {
     dummy: {
