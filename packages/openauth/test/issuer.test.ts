@@ -215,7 +215,7 @@ describe("client credentials flow", () => {
   test("success", async () => {
     const client = createClient({
       issuer: "https://auth.example.com",
-      clientID: "123",
+      clientID: "myuser",
       fetch: (a, b) => Promise.resolve(auth.request(a, b)),
     })
     const response = await auth.request("https://auth.example.com/token", {
