@@ -71,8 +71,8 @@ afterEach(() => {
   setSystemTime()
 })
 
-describe("implicit flow", () => {
-  test("success without refresh token", async () => {
+describe("response_type=token", () => {
+  test("returns Bearer token metadata without refresh_token", async () => {
     const url = new URL("https://auth.example.com/authorize")
     url.searchParams.set("client_id", "123")
     url.searchParams.set("redirect_uri", "https://client.example.com/callback")
