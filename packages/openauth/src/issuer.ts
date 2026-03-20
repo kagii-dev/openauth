@@ -194,10 +194,18 @@ export type Prettify<T> = {
 
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
-import { CompactEncrypt, compactDecrypt, jwtVerify, SignJWT } from "jose"
 import {
+  CompactEncrypt,
+  compactDecrypt,
+  type JWTVerifyResult,
+  jwtVerify,
+  SignJWT,
+} from "jose"
+import {
+  InvalidAccessTokenError,
   MissingParameterError,
   OauthError,
+  UnauthorizedAudienceError,
   UnauthorizedClientError,
   UnknownStateError,
 } from "./error.js"
@@ -205,7 +213,11 @@ import { encryptionKeys, legacySigningKeys, signingKeys } from "./keys.js"
 import { validatePKCE } from "./pkce.js"
 import { DynamoStorage } from "./storage/dynamo.js"
 import { MemoryStorage } from "./storage/memory.js"
-import { Storage, type StorageAdapter } from "./storage/storage.js"
+import {
+  Storage,
+  type StorageAdapter,
+  type StorageValue,
+} from "./storage/storage.js"
 import { Select } from "./ui/select.js"
 import { setTheme, type Theme } from "./ui/theme.js"
 import { getRelativeUrl, isDomainMatch, lazy } from "./util.js"
@@ -356,6 +368,11 @@ export interface IssuerInput<
      */
     retention?: number
   }
+  /**
+   * Audiences that are allowed to call the issuer. If specified, the issuer will check the `audience`
+   * parameter in the authorization request and only allow if it's in this list. If not specified, every audience is allowed.
+   */
+  authorizedAudiences?: string[]
   /**
    * Optionally, configure the UI that's displayed when the user visits the root URL of the
    * of the OpenAuth server.
@@ -541,6 +558,7 @@ export function issuer<
                 type: type as string,
                 properties,
                 clientID: authorization.client_id,
+                aud: authorization.audience ?? authorization.client_id,
                 ttl: {
                   access: subjectOpts?.ttl?.access ?? ttlAccess,
                   refresh: subjectOpts?.ttl?.refresh ?? ttlRefresh,
@@ -664,6 +682,7 @@ export function issuer<
       properties: any
       subject: string
       clientID: string
+      aud: string
       ttl: {
         access: number
         refresh: number
@@ -701,7 +720,7 @@ export function issuer<
         mode: "access",
         type: value.type,
         properties: value.properties,
-        aud: value.clientID,
+        aud: value.aud ?? value.clientID,
         iss: issuer(ctx),
         sub: value.subject,
       })
@@ -820,18 +839,7 @@ export function issuer<
             400,
           )
         const key = ["oauth:code", code.toString()]
-        const payload = await Storage.get<{
-          type: string
-          properties: any
-          clientID: string
-          redirectURI: string
-          subject: string
-          ttl: {
-            access: number
-            refresh: number
-          }
-          pkce?: AuthorizationState["pkce"]
-        }>(storage, key)
+        const payload = await Storage.get<StorageValue>(storage, key)
         if (!payload) {
           return c.json(
             {
@@ -911,18 +919,12 @@ export function issuer<
         const token = splits.pop()!
         const subject = splits.join(":")
         const key = ["oauth:refresh", subject, token]
-        const payload = await Storage.get<{
-          type: string
-          properties: any
-          clientID: string
-          subject: string
-          ttl: {
-            access: number
-            refresh: number
-          }
-          nextToken: string
-          timeUsed?: number
-        }>(storage, key)
+        const payload = await Storage.get<
+          StorageValue<{
+            nextToken: string
+            timeUsed?: number
+          }>
+        >(storage, key)
         if (!payload) {
           return c.json(
             {
@@ -1034,7 +1036,7 @@ export function issuer<
     const redirect_uri = c.req.query("redirect_uri")
     const state = c.req.query("state")
     const client_id = c.req.query("client_id")
-    const audience = c.req.query("audience")
+    const audience = c.req.query("audience") ?? client_id
     const code_challenge = c.req.query("code_challenge")
     const code_challenge_method = c.req.query("code_challenge_method")
     const authorization: AuthorizationState = {
@@ -1062,6 +1064,15 @@ export function issuer<
 
     if (!client_id) {
       throw new MissingParameterError("client_id")
+    }
+
+    if (input.authorizedAudiences) {
+      if (!audience) {
+        throw new MissingParameterError("audience")
+      }
+      if (!input.authorizedAudiences.includes(audience)) {
+        throw new UnauthorizedAudienceError()
+      }
     }
 
     if (input.start) {
@@ -1132,48 +1143,74 @@ export function issuer<
         400,
       )
     }
-
     try {
-      const result = await jwtVerify<{
+      let result: JWTVerifyResult<{
         mode: "access"
-        type: keyof SubjectSchema
-        properties: v1.InferInput<SubjectSchema[keyof SubjectSchema]>
-        aud?: string
-      }>(token, () => signingKey().then((item) => item.public), {
-        issuer: issuer(c),
-      })
-
-      // Validate that the token has an audience claim
-      if (!result.payload.aud) {
-        return c.json(
-          {
-            error: "invalid_token",
-            error_description: "Token missing audience claim",
-          },
-          401,
-        )
+        type: string
+        properties: unknown
+        aud?: string | undefined
+      }>
+      try {
+        result = await jwtVerify<{
+          mode: "access"
+          type: keyof SubjectSchema
+          properties: v1.InferInput<SubjectSchema[keyof SubjectSchema]>
+          aud?: string
+        }>(token, () => signingKey().then((item) => item.public), {
+          issuer: issuer(c),
+        })
+      } catch (err) {
+        throw new InvalidAccessTokenError({ cause: err })
       }
 
-      const validated = await input.subjects[result.payload.type][
-        "~standard"
-      ].validate(result.payload.properties)
+      // Validate that the token has an audience claim. Throw on missing audience.
+      if (!result.payload.aud) {
+        throw new InvalidAccessTokenError({
+          error: "invalid_token",
+          error_description: "Token is missing audience claim",
+        })
+      }
+
+      let validated: v1.StandardResult<unknown>
+      try {
+        validated = await input.subjects[result.payload.type][
+          "~standard"
+        ].validate(result.payload.properties)
+      } catch (err) {
+        throw new InvalidAccessTokenError({
+          cause: err,
+          error: "invalid_token",
+          error_description: "Token properties validation failed",
+        })
+      }
 
       if (!validated.issues && result.payload.mode === "access") {
         return c.json(validated.value as SubjectSchema)
       }
 
-      return c.json({
+      throw new InvalidAccessTokenError({
         error: "invalid_token",
-        error_description: "Invalid token",
+        error_description: "Token validation failed",
       })
-    } catch (_e) {
-      return c.json(
-        {
-          error: "invalid_token",
-          error_description: "Token verification failed",
-        },
-        401,
-      )
+    } catch (err) {
+      if (err instanceof InvalidAccessTokenError) {
+        return c.json(
+          {
+            error: err.error,
+            error_description:
+              err.error_description ?? "Token verification failed",
+          },
+          401,
+        )
+      } else {
+        return c.json(
+          {
+            error: "token_verification_error",
+            error_description: "Token verification failed",
+          },
+          401,
+        )
+      }
     }
   })
 
@@ -1183,6 +1220,13 @@ export function issuer<
     if (err instanceof UnauthorizedClientError) {
       return c.json(
         { error: err.error, error_description: err.description },
+        400,
+      )
+    }
+
+    if (err instanceof UnauthorizedAudienceError) {
+      return c.json(
+        { error: "unauthorized_audience", error_description: err.message },
         400,
       )
     }

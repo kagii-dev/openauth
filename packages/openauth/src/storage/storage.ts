@@ -1,3 +1,5 @@
+import type { AuthorizationState } from "../issuer.js"
+
 export interface StorageAdapter {
   get(key: string[]): Promise<Record<string, any> | undefined>
   remove(key: string[]): Promise<void>
@@ -14,6 +16,25 @@ export function joinKey(key: string[]) {
 export function splitKey(key: string) {
   return key.split(SEPERATOR)
 }
+
+/**
+ * The value stored in the storage.
+ */
+export type StorageValue<
+  AdditionalValues extends Record<string, unknown> = {},
+> = {
+  type: string
+  properties: any
+  clientID: string
+  aud: string
+  redirectURI: string
+  subject: string
+  ttl: {
+    access: number
+    refresh: number
+  }
+  pkce?: AuthorizationState["pkce"]
+} & AdditionalValues
 
 export namespace Storage {
   function encode(key: string[]) {

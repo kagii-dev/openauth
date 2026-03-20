@@ -179,6 +179,17 @@ export interface AuthorizeOptions {
    * If there's only one provider configured, the user will be redirected to that.
    */
   provider?: string
+  /**
+   * audience to use for the authorization request. This will be used as the `aud` claim in the token.
+   * This will be verified and if the token does not have/match the expected audience, the verify call will fail.
+   *
+   * ```ts
+   * {
+   *   audience: "api"
+   * }
+   * ```
+   */
+  audience?: string
 }
 
 export interface AuthorizeResult {
@@ -597,6 +608,7 @@ export function createClient(input: ClientInput): Client {
       result.searchParams.set("redirect_uri", redirectURI)
       result.searchParams.set("response_type", response)
       result.searchParams.set("state", challenge.state)
+      result.searchParams.set("audience", opts?.audience || input.clientID)
       if (opts?.provider) result.searchParams.set("provider", opts.provider)
       if (opts?.pkce && response === "code") {
         const pkce = await generatePKCE()

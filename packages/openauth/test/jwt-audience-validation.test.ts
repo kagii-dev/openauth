@@ -34,6 +34,7 @@ let storage = MemoryStorage()
 
 describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
   let auth: ReturnType<typeof issuer>
+  let authWithAuthorizedAudience: ReturnType<typeof issuer>
   let clientA: ReturnType<typeof createClient>
   let clientB: ReturnType<typeof createClient>
 
@@ -42,6 +43,31 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
     auth = issuer({
       storage,
       subjects,
+      providers: {
+        dummy: {
+          type: "dummy",
+          init(route, ctx) {
+            route.get("/authorize", async (c) => {
+              return ctx.success(c, {
+                email: "foo@bar.com",
+              })
+            })
+          },
+        } satisfies Provider<{ email: string }>,
+      },
+      success: async (ctx, value) => {
+        if (value.provider === "dummy") {
+          return ctx.subject("user", {
+            userID: "123",
+          })
+        }
+        throw new Error("Invalid provider: " + value.provider)
+      },
+    })
+    authWithAuthorizedAudience = issuer({
+      storage,
+      subjects,
+      authorizedAudiences: ["client-a"],
       providers: {
         dummy: {
           type: "dummy",
@@ -79,11 +105,14 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
     })
   })
 
-  async function generateTokenForClient(clientID: string) {
+  async function generateTokenForClient(
+    clientID: string,
+    issuer: typeof auth = auth,
+  ) {
     const client = createClient({
       issuer: "https://auth.example.com",
       clientID,
-      fetch: (a, b) => Promise.resolve(auth.request(a, b)),
+      fetch: (a, b) => Promise.resolve(issuer.request(a, b)),
     })
 
     const { challenge, url } = await client.authorize(
@@ -92,8 +121,8 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
       { pkce: true },
     )
 
-    let response = await auth.request(url)
-    response = await auth.request(response.headers.get("location")!, {
+    let response = await issuer.request(url)
+    response = await issuer.request(response.headers.get("location")!, {
       headers: { cookie: response.headers.get("set-cookie")! },
     })
 
@@ -110,7 +139,7 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
     return exchanged.tokens.access
   }
 
-  describe("Token Mix-Up Attack Prevention", () => {
+  describe("Token Audience Validation", () => {
     test("Token issued for client-a should NOT work for client-b", async () => {
       // Generate token for client A
       const tokenForClientA = await generateTokenForClient("client-a")
@@ -120,6 +149,28 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
 
       // Should fail with audience mismatch error
       expect(result.err).toBeInstanceOf(InvalidAccessTokenError)
+    })
+    test("Issuer with audience validation should reject tokens with wrong audience", async () => {
+      // Create an issuer that only accepts tokens for "client-a"
+      const client = createClient({
+        issuer: "https://auth.example.com",
+        clientID: "client-a",
+        fetch: (a, b) =>
+          Promise.resolve(authWithAuthorizedAudience.request(a, b)),
+      })
+
+      const authaurizedData = await client.authorize(
+        "https://client.example.com/callback",
+        "code",
+        { pkce: true, audience: "unauthorized-audience" },
+      )
+      const response = await authWithAuthorizedAudience.request(
+        authaurizedData.url,
+      )
+      expect(response.status).toBe(400)
+      const body = await response.json()
+      console.log(body)
+      expect(body.error).toBe("unauthorized_audience")
     })
   })
   describe("Backward Compatibility", () => {
@@ -133,6 +184,34 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
       ).toEqual({
         userID: "123",
       })
+    })
+    test("Authorize flow should still work without the issuer audience parameter", async () => {
+      const client = createClient({
+        issuer: "https://auth.example.com",
+        clientID: "client-a",
+        fetch: (a, b) => Promise.resolve(auth.request(a, b)),
+      })
+      const { challenge, url } = await client.authorize(
+        "https://client.example.com/callback",
+        "code",
+        { pkce: true },
+      )
+
+      let response = await auth.request(url)
+      response = await auth.request(response.headers.get("location")!, {
+        headers: { cookie: response.headers.get("set-cookie")! },
+      })
+
+      const location = new URL(response.headers.get("location")!)
+      const code = location.searchParams.get("code")!
+
+      const exchanged = await client.exchange(
+        code,
+        "https://client.example.com/callback",
+        challenge.verifier,
+      )
+
+      expect(exchanged.err).toBeFalse()
     })
   })
   describe("Edge Cases", () => {

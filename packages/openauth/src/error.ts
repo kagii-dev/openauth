@@ -69,6 +69,13 @@ export class UnauthorizedClientError extends OauthError {
   }
 }
 
+export class UnauthorizedAudienceError extends Error {
+  public name = "UnauthorizedAudienceError"
+  constructor() {
+    super("Unauthorized audience")
+  }
+}
+
 /**
  * The browser was in an unknown state.
  *
@@ -105,8 +112,16 @@ export class InvalidRefreshTokenError extends Error {
  * The given access token is invalid.
  */
 export class InvalidAccessTokenError extends Error {
-  constructor() {
-    super("Invalid access token")
+  public error: string
+  public error_description: string
+  constructor({
+    cause,
+    error,
+    error_description,
+  }: { cause?: unknown; error?: string; error_description?: string } = {}) {
+    super("Invalid access token", { cause })
+    this.error = error ?? "invalid_token"
+    this.error_description = error_description ?? "Token verification failed"
   }
 }
 
