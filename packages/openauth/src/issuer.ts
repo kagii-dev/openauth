@@ -192,7 +192,6 @@ export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
 
-import { console } from "@cloudflare/workers-types"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import {
