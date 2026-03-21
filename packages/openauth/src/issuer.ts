@@ -989,11 +989,12 @@ export function issuer<
 
         const clientID = form.get("client_id")
         const clientSecret = form.get("client_secret")
+        const aud = audience?.toString() ?? clientID?.toString()
         if (!clientID)
           return c.json({ error: "missing `client_id` form value" }, 400)
         if (!clientSecret)
           return c.json({ error: "missing `client_secret` form value" }, 400)
-        if (!validateAudience(audience?.toString() ?? clientID.toString())) {
+        if (!validateAudience(aud)) {
           return c.json({ error: "unauthorized_audience" }, 400)
         }
         const params: Record<string, string> = {}
@@ -1008,6 +1009,7 @@ export function issuer<
           clientSecret: clientSecret.toString(),
           params,
         })
+
         return input.success(
           {
             async subject(type, properties, opts) {
@@ -1016,7 +1018,7 @@ export function issuer<
                 subject:
                   opts?.subject || (await resolveSubject(type, properties)),
                 properties,
-                aud: audience ?? clientID,
+                aud: aud as string,
                 clientID: clientID.toString(),
                 ttl: {
                   access: opts?.ttl?.access ?? ttlAccess,
