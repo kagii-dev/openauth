@@ -100,7 +100,9 @@ describe("verify", () => {
 
   test("success", async () => {
     const refreshSpy = spyOn(client, "refresh")
-    const verified = await client.verify(subjects, tokens.access)
+    const verified = await client.verify(subjects, tokens.access, {
+      audience: "123",
+    })
     expect(verified).toStrictEqual({
       aud: "123",
       subject: {
@@ -113,10 +115,24 @@ describe("verify", () => {
     expect(refreshSpy).not.toBeCalled()
   })
 
+  test("success without expected audience", async () => {
+    const verified = await client.verify(subjects, tokens.access)
+    expect(verified).toStrictEqual({
+      aud: "123",
+      subject: {
+        type: "user",
+        properties: {
+          userID: "123",
+        },
+      },
+    })
+  })
+
   test("success after refresh", async () => {
     const refreshSpy = spyOn(client, "refresh")
     setSystemTime(Date.now() + 1000 * 6000 + 1000)
     const verified = await client.verify(subjects, tokens.access, {
+      audience: "123",
       refresh: tokens.refresh,
     })
     expect(verified).toStrictEqual({
@@ -138,7 +154,9 @@ describe("verify", () => {
 
   test("failure with expired access token", async () => {
     setSystemTime(Date.now() + 1000 * 6000 + 1000)
-    const verified = await client.verify(subjects, tokens.access)
+    const verified = await client.verify(subjects, tokens.access, {
+      audience: "123",
+    })
     expect(verified).toStrictEqual({
       err: expect.any(InvalidAccessTokenError),
     })
@@ -147,6 +165,7 @@ describe("verify", () => {
   test("failure with invalid refresh token", async () => {
     setSystemTime(Date.now() + 1000 * 6000 + 1000)
     const verified = await client.verify(subjects, tokens.access, {
+      audience: "123",
       refresh: "foo",
     })
     expect(verified).toStrictEqual({

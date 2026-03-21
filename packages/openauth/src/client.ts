@@ -287,7 +287,14 @@ export interface VerifyOptions {
    */
   issuer?: string
   /**
-   * @internal
+   * The expected audience (aud) claim value.
+   *
+   * @example
+   * ```ts
+   * {
+   *   audience: "api"
+   * }
+   * ```
    */
   audience?: string
   /**
@@ -701,6 +708,7 @@ export function createClient(input: ClientInput): Client {
       options?: VerifyOptions,
     ): Promise<VerifyResult<T> | VerifyError> {
       const jwks = await getJWKS()
+      const expectedAudience = options?.audience ?? input.clientID
       try {
         const result = await jwtVerify<{
           mode: "access"
@@ -708,6 +716,7 @@ export function createClient(input: ClientInput): Client {
           properties: v1.InferInput<T[keyof T]>
         }>(token, jwks, {
           issuer,
+          audience: expectedAudience,
         })
         const validated = await subjects[result.payload.type][
           "~standard"
@@ -733,6 +742,7 @@ export function createClient(input: ClientInput): Client {
             {
               refresh: refreshed.tokens!.refresh,
               issuer,
+              audience: expectedAudience,
               fetch: options?.fetch,
             },
           )
