@@ -78,6 +78,11 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
               })
             })
           },
+          async client() {
+            return {
+              email: "example@domain.com",
+            }
+          },
         } satisfies Provider<{ email: string }>,
       },
       success: async (ctx, value) => {
@@ -150,7 +155,7 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
       // Should fail with audience mismatch error
       expect(result.err).toBeInstanceOf(InvalidAccessTokenError)
     })
-    test("Issuer with audience validation should reject tokens with wrong audience", async () => {
+    describe("Issuer with audience validation should reject tokens with wrong audience", async () => {
       // Create an issuer that only accepts tokens for "client-a"
       const client = createClient({
         issuer: "https://auth.example.com",
@@ -158,75 +163,112 @@ describe("JWT Audience Validation (RFC 7519 §4.1.3)", () => {
         fetch: (a, b) =>
           Promise.resolve(authWithAuthorizedAudience.request(a, b)),
       })
-
-      const authaurizedData = await client.authorize(
-        "https://client.example.com/callback",
-        "code",
-        { pkce: true, audience: "unauthorized-audience" },
-      )
-      const response = await authWithAuthorizedAudience.request(
-        authaurizedData.url,
-      )
-      expect(response.status).toBe(400)
-      const body = await response.json()
-      console.log(body)
-      expect(body.error).toBe("unauthorized_audience")
-    })
-  })
-  describe("Backward Compatibility", () => {
-    test("Token should still work for the same client", async () => {
-      const tokenForClientA = await generateTokenForClient("client-a")
-      const res = await clientA.verify(subjects, tokenForClientA)
-      expect(res.err).toBeUndefined()
-
-      expect(
-        (res as Exclude<typeof res, VerifyError>).subject.properties,
-      ).toEqual({
-        userID: "123",
+      test("Response Type Code Flow with unauthorized audience should fail", async () => {
+        const authaurizedData = await client.authorize(
+          "https://client.example.com/callback",
+          "code",
+          { pkce: true, audience: "unauthorized-audience" },
+        )
+        const response = await authWithAuthorizedAudience.request(
+          authaurizedData.url,
+        )
+        expect(response.status).toBe(400)
+        const body = await response.json()
+        console.log(body)
+        expect(body.error).toBe("unauthorized_audience")
+      })
+      test("Response Type Token Flow with unauthorized audience should fail", async () => {
+        const authaurizedData = await client.authorize(
+          "https://client.example.com/callback",
+          "token",
+          { pkce: true, audience: "unauthorized-audience" },
+        )
+        const response = await authWithAuthorizedAudience.request(
+          authaurizedData.url,
+        )
+        expect(response.status).toBe(400)
+        const body = await response.json()
+        console.log(body)
+        expect(body.error).toBe("unauthorized_audience")
+      })
+      test("Client Credentials Flow with unauthorized audience should fail", async () => {
+        const response = await authWithAuthorizedAudience.request(
+          "https://auth.example.com/token",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+              grant_type: "client_credentials",
+              client_id: "client-a",
+              client_secret: "dummy-secret",
+              provider: "dummy",
+              audience: "unauthorized-audience",
+            }),
+          },
+        )
+        expect(response.status).toBe(400)
+        const body = await response.json()
+        console.log(body)
+        expect(body.error).toBe("unauthorized_audience")
       })
     })
-    test("Authorize flow should still work without the issuer audience parameter", async () => {
-      const client = createClient({
-        issuer: "https://auth.example.com",
-        clientID: "client-a",
-        fetch: (a, b) => Promise.resolve(auth.request(a, b)),
+    describe("Backward Compatibility", () => {
+      test("Token should still work for the same client", async () => {
+        const tokenForClientA = await generateTokenForClient("client-a")
+        const res = await clientA.verify(subjects, tokenForClientA)
+        expect(res.err).toBeUndefined()
+
+        expect(
+          (res as Exclude<typeof res, VerifyError>).subject.properties,
+        ).toEqual({
+          userID: "123",
+        })
       })
-      const { challenge, url } = await client.authorize(
-        "https://client.example.com/callback",
-        "code",
-        { pkce: true },
-      )
+      test("Authorize flow should still work without the issuer audience parameter", async () => {
+        const client = createClient({
+          issuer: "https://auth.example.com",
+          clientID: "client-a",
+          fetch: (a, b) => Promise.resolve(auth.request(a, b)),
+        })
+        const { challenge, url } = await client.authorize(
+          "https://client.example.com/callback",
+          "code",
+          { pkce: true },
+        )
 
-      let response = await auth.request(url)
-      response = await auth.request(response.headers.get("location")!, {
-        headers: { cookie: response.headers.get("set-cookie")! },
+        let response = await auth.request(url)
+        response = await auth.request(response.headers.get("location")!, {
+          headers: { cookie: response.headers.get("set-cookie")! },
+        })
+
+        const location = new URL(response.headers.get("location")!)
+        const code = location.searchParams.get("code")!
+
+        const exchanged = await client.exchange(
+          code,
+          "https://client.example.com/callback",
+          challenge.verifier,
+        )
+
+        expect(exchanged.err).toBeFalse()
       })
-
-      const location = new URL(response.headers.get("location")!)
-      const code = location.searchParams.get("code")!
-
-      const exchanged = await client.exchange(
-        code,
-        "https://client.example.com/callback",
-        challenge.verifier,
-      )
-
-      expect(exchanged.err).toBeFalse()
     })
-  })
-  describe("Edge Cases", () => {
-    test("Case-sensitive audience mismatching", async () => {
-      const token = await generateTokenForClient("MyService")
+    describe("Edge Cases", () => {
+      test("Case-sensitive audience mismatching", async () => {
+        const token = await generateTokenForClient("MyService")
 
-      const lowerClient = createClient({
-        issuer: "https://auth.example.com",
-        clientID: "myservice", // lowercase
-        fetch: (a, b) => Promise.resolve(auth.request(a, b)),
+        const lowerClient = createClient({
+          issuer: "https://auth.example.com",
+          clientID: "myservice", // lowercase
+          fetch: (a, b) => Promise.resolve(auth.request(a, b)),
+        })
+
+        // Lowercase should fail (case-sensitive)
+        const lowerResult = await lowerClient.verify(subjects, token)
+        expect(lowerResult.err).toBeInstanceOf(InvalidAccessTokenError)
       })
-
-      // Lowercase should fail (case-sensitive)
-      const lowerResult = await lowerClient.verify(subjects, token)
-      expect(lowerResult.err).toBeInstanceOf(InvalidAccessTokenError)
     })
   })
 })

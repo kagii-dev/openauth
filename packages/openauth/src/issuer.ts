@@ -751,6 +751,12 @@ export function issuer<
     )
   }
 
+  function validateAudience(aud?: string) {
+    if (!input.authorizedAudiences) return true
+    if (!aud) return false
+    return input.authorizedAudiences.includes(aud)
+  }
+
   function issuer(ctx: Context) {
     return new URL(getRelativeUrl(ctx, "/")).origin
   }
@@ -969,6 +975,7 @@ export function issuer<
 
       if (grantType === "client_credentials") {
         const provider = form.get("provider")
+        const audience = form.get("audience")
         if (!provider)
           return c.json({ error: "missing `provider` form value" }, 400)
         const match = input.providers[provider.toString()]
@@ -979,13 +986,16 @@ export function issuer<
             { error: "this provider does not support client_credentials" },
             400,
           )
+
         const clientID = form.get("client_id")
         const clientSecret = form.get("client_secret")
         if (!clientID)
           return c.json({ error: "missing `client_id` form value" }, 400)
         if (!clientSecret)
           return c.json({ error: "missing `client_secret` form value" }, 400)
-
+        if (!validateAudience(audience?.toString() ?? clientID.toString())) {
+          return c.json({ error: "unauthorized_audience" }, 400)
+        }
         const params: Record<string, string> = {}
         for (const [key, value] of form.entries()) {
           if (typeof value === "string") {
@@ -1006,6 +1016,7 @@ export function issuer<
                 subject:
                   opts?.subject || (await resolveSubject(type, properties)),
                 properties,
+                aud: audience ?? clientID,
                 clientID: clientID.toString(),
                 ttl: {
                   access: opts?.ttl?.access ?? ttlAccess,
@@ -1065,14 +1076,8 @@ export function issuer<
     if (!client_id) {
       throw new MissingParameterError("client_id")
     }
-
-    if (input.authorizedAudiences) {
-      if (!audience) {
-        throw new MissingParameterError("audience")
-      }
-      if (!input.authorizedAudiences.includes(audience)) {
-        throw new UnauthorizedAudienceError()
-      }
+    if (!validateAudience(audience)) {
+      throw new UnauthorizedAudienceError()
     }
 
     if (input.start) {
