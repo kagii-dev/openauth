@@ -192,6 +192,7 @@ export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
 
+import { console } from "@cloudflare/workers-types"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
 import {
@@ -1193,6 +1194,7 @@ export function issuer<
         error_description: "Token validation failed",
       })
     } catch (err) {
+      console.error(`Failed to validate access token - ${String(err)}`)
       if (err instanceof InvalidAccessTokenError) {
         return c.json(
           {
