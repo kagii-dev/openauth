@@ -147,7 +147,9 @@ describe("code flow", () => {
       refresh: expectNonEmptyString,
       expiresIn: 60,
     })
-    const verified = await client.verify(subjects, tokens.access)
+    const verified = await client.verify(subjects, tokens.access, {
+      audience: "123",
+    })
     if (verified.err) throw verified.err
     expect(verified.subject).toStrictEqual({
       type: "user",
@@ -251,7 +253,7 @@ describe("client credentials flow", () => {
   test("success", async () => {
     const client = createClient({
       issuer: "https://auth.example.com",
-      clientID: "123",
+      clientID: "myuser",
       fetch: (a, b) => Promise.resolve(auth.request(a, b)),
     })
     const response = await auth.request("https://auth.example.com/token", {
@@ -272,7 +274,9 @@ describe("client credentials flow", () => {
       access_token: expectNonEmptyString,
       refresh_token: expectNonEmptyString,
     })
-    const verified = await client.verify(subjects, tokens.access_token)
+    const verified = await client.verify(subjects, tokens.access_token, {
+      audience: "myuser",
+    })
     expect(verified).toStrictEqual({
       aud: "myuser",
       subject: {
@@ -355,7 +359,9 @@ describe("refresh token", () => {
     expect(refreshed.access_token).not.toEqual(tokens.access)
     expect(refreshed.refresh_token).not.toEqual(tokens.refresh)
 
-    const verified = await client.verify(subjects, refreshed.access_token)
+    const verified = await client.verify(subjects, refreshed.access_token, {
+      audience: "123",
+    })
     expect(verified).toStrictEqual({
       aud: "123",
       subject: {
@@ -382,7 +388,9 @@ describe("refresh token", () => {
     expect(refreshed.access_token).not.toEqual(tokens.access)
     expect(refreshed.refresh_token).not.toEqual(tokens.refresh)
 
-    const verified = await client.verify(subjects, refreshed.access_token)
+    const verified = await client.verify(subjects, refreshed.access_token, {
+      audience: "123",
+    })
     expect(verified).toStrictEqual({
       aud: "123",
       subject: {
@@ -517,5 +525,17 @@ describe("user info", () => {
     const userinfo = await response.json()
 
     expect(userinfo).toStrictEqual({ userID: "123" })
+  })
+
+  test("invalid token", async () => {
+    const response = await auth.request("https://auth.example.com/userinfo", {
+      headers: { Authorization: "Bearer invalid.token.here" },
+    })
+
+    expect(response.status).toBe(401)
+    expect(await response.json()).toStrictEqual({
+      error: "invalid_token",
+      error_description: "Token verification failed",
+    })
   })
 })

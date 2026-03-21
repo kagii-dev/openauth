@@ -65,15 +65,20 @@ test("code flow", async () => {
   if (exchanged.err) throw exchanged.err
   expect(exchanged.tokens.access).toBeTruthy()
   expect(exchanged.tokens.refresh).toBeTruthy()
-  const verified = await client.verify(subjects, exchanged.tokens.access)
+  const verified = await client.verify(subjects, exchanged.tokens.access, {
+    audience: "123",
+  })
   if (verified.err) throw verified.err
   expect(verified.subject.type).toBe("user")
   if (verified.subject.type !== "user") throw new Error("Invalid subject")
   expect(verified.subject.properties.userID).toBe("123")
   await new Promise((resolve) => setTimeout(resolve, 2000))
-  const failed = await client.verify(subjects, exchanged.tokens.access)
+  const failed = await client.verify(subjects, exchanged.tokens.access, {
+    audience: "123",
+  })
   expect(failed.err).toBeInstanceOf(Error)
   const next = await client.verify(subjects, exchanged.tokens.access, {
+    audience: "123",
     refresh: exchanged.tokens.refresh,
   })
   if (next.err) throw next.err
@@ -81,5 +86,7 @@ test("code flow", async () => {
   expect(next.tokens?.refresh).toBeDefined()
   expect(next.tokens?.access).not.toEqual(exchanged.tokens.access)
   expect(next.tokens?.refresh).not.toEqual(exchanged.tokens.refresh)
-  await client.verify(subjects, next.tokens!.access!)
+  await client.verify(subjects, next.tokens!.access!, {
+    audience: "123",
+  })
 })
