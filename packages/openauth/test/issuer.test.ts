@@ -353,6 +353,7 @@ describe("refresh token", () => {
     const refreshed = await response.json()
     expect(refreshed).toStrictEqual({
       access_token: expectNonEmptyString,
+      token_type: "Bearer",
       refresh_token: expectNonEmptyString,
       expires_in: expect.any(Number),
     })
@@ -382,6 +383,7 @@ describe("refresh token", () => {
     expect(refreshed).toStrictEqual({
       access_token: expectNonEmptyString,
       refresh_token: expectNonEmptyString,
+      token_type: "Bearer",
       expires_in: expect.any(Number),
     })
 
