@@ -120,13 +120,17 @@ export interface PasswordConfig {
    * @example
    * ```ts
    * {
-   *   sendCode: async (email, code) => {
+   *   sendCode: async (email, code, type) => {
    *     // Send an email with the code
    *   }
    * }
    * ```
    */
-  sendCode: (email: string, code: string) => Promise<void>
+  sendCode: (
+    email: string,
+    code: string,
+    type: "register" | "change",
+  ) => Promise<void>
   /**
    * Callback to validate the password on sign up and password reset.
    *
@@ -378,7 +382,7 @@ export function PasswordProvider(
           ])
           if (existing) return transition(provider, { type: "email_taken" })
           const code = generate()
-          await config.sendCode(email, code)
+          await config.sendCode(email, code, "register")
           return transition({
             type: "code",
             code,
@@ -389,7 +393,7 @@ export function PasswordProvider(
 
         if (action === "register" && provider.type === "code") {
           const code = generate()
-          await config.sendCode(provider.email, code)
+          await config.sendCode(provider.email, code, "register")
           return transition({
             type: "code",
             code,
@@ -455,7 +459,7 @@ export function PasswordProvider(
               { type: "invalid_email" },
             )
           const code = generate()
-          await config.sendCode(email, code)
+          await config.sendCode(email, code, "change")
 
           return transition({
             type: "code",
