@@ -20,7 +20,7 @@
 | 261 | https://github.com/anomalyco/openauth/pull/261 | Low | [ ] | Docs typo fix. |
 | 260 | https://github.com/anomalyco/openauth/pull/260 | Low | [ ] | Docs update about Zod Standard Schema support. |
 | 243 | https://github.com/anomalyco/openauth/pull/243 | Low | [ ] | Fixes typo in `standalone.mdx`. |
-| 319 | https://github.com/anomalyco/openauth/pull/319 | Low | [ ] | Adds optional `refresh()` callback to update claims during refresh-token flows. |
+| 319 | https://github.com/anomalyco/openauth/pull/319 | Low | [x] | Adds optional `refresh()` callback to update claims during refresh-token flows. |
 | 320 | https://github.com/anomalyco/openauth/pull/320 | Low | [x] | Adds `D1Storage` adapter for Cloudflare D1. |
 | 303 | https://github.com/anomalyco/openauth/pull/303 | Low | [ ] | WIP for RFC 8707 resource indicators. |
 | 284 | https://github.com/anomalyco/openauth/pull/284 | Low | [ ] | Adds support for native iOS/macOS Sign in with Apple token validation flow. |
