@@ -1,11 +1,11 @@
 | PR number | link | priority | completed | description |
 |---|---|---|---|---|
-| 309 | https://github.com/anomalyco/openauth/pull/309 | Critical | [ ] | Security fix for missing JWT `aud` validation; prevents token mix-up/confused deputy attacks. |
+| 309 | https://github.com/anomalyco/openauth/pull/309 | Critical | [x] | Security fix for missing JWT `aud` validation; prevents token mix-up/confused deputy attacks. |
 | 305 | https://github.com/anomalyco/openauth/pull/305 | Critical | [x] | Security fix for malformed `redirect_uri` bypass that could allow external redirects. |
 | 323 | https://github.com/anomalyco/openauth/pull/323 | Critical | [x] | Fixes eventual-consistency race that can create hundreds of keys, causing severe latency and crashes on fresh Workers/KV deploys. |
 | 304 | https://github.com/anomalyco/openauth/pull/304 | High | [x] | Fixes implicit-flow RFC violation by removing `refresh_token` issuance and adding required token response fields. |
-| 318 | https://github.com/anomalyco/openauth/pull/318 | High | [x] | Adds required `token_type: Bearer` to auth-code and refresh-token responses for OAuth compliance and client compatibility. |
-| 103 | https://github.com/anomalyco/openauth/pull/103 | High | [ ] | Adds OAuth `state` verification to the Cloudflare API example; example-level CSRF protection fix. |
+| 318 | https://github.com/anomalyco/openauth/pull/318 | High | [ ] | Adds required `token_type: Bearer` to auth-code and refresh-token responses for OAuth compliance and client compatibility. |
+| 103 | https://github.com/anomalyco/openauth/pull/103 | High | [x] | Adds OAuth `state` verification to the Cloudflare API example; example-level CSRF protection fix. |
 | 325 | https://github.com/anomalyco/openauth/pull/325 | Medium | [ ] | Fixes examples/docs so valid sessions do not trigger unnecessary IdP redirects. |
 | 310 | https://github.com/anomalyco/openauth/pull/310 | Medium | [ ] | Fixes resend action naming so the UI correctly shows "Code resent to ...". |
 | 308 | https://github.com/anomalyco/openauth/pull/308 | Medium | [x] | Fixes mismatched TypeScript definitions for `sendCode` between Code UI and Code Provider. |
@@ -20,7 +20,7 @@
 | 261 | https://github.com/anomalyco/openauth/pull/261 | Low | [ ] | Docs typo fix. |
 | 260 | https://github.com/anomalyco/openauth/pull/260 | Low | [ ] | Docs update about Zod Standard Schema support. |
 | 243 | https://github.com/anomalyco/openauth/pull/243 | Low | [ ] | Fixes typo in `standalone.mdx`. |
-| 319 | https://github.com/anomalyco/openauth/pull/319 | Low | [ ] | Adds optional `refresh()` callback to update claims during refresh-token flows. |
+| 319 | https://github.com/anomalyco/openauth/pull/319 | Low | [x] | Adds optional `refresh()` callback to update claims during refresh-token flows. |
 | 320 | https://github.com/anomalyco/openauth/pull/320 | Low | [x] | Adds `D1Storage` adapter for Cloudflare D1. |
 | 303 | https://github.com/anomalyco/openauth/pull/303 | Low | [ ] | WIP for RFC 8707 resource indicators. |
 | 284 | https://github.com/anomalyco/openauth/pull/284 | Low | [ ] | Adds support for native iOS/macOS Sign in with Apple token validation flow. |
