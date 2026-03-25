@@ -1,6 +1,6 @@
 | PR number | link | priority | completed | description |
 |---|---|---|---|---|
-| 309 | https://github.com/anomalyco/openauth/pull/309 | Critical | [ ] | Security fix for missing JWT `aud` validation; prevents token mix-up/confused deputy attacks. |
+| 309 | https://github.com/anomalyco/openauth/pull/309 | Critical | [x] | Security fix for missing JWT `aud` validation; prevents token mix-up/confused deputy attacks. |
 | 305 | https://github.com/anomalyco/openauth/pull/305 | Critical | [x] | Security fix for malformed `redirect_uri` bypass that could allow external redirects. |
 | 323 | https://github.com/anomalyco/openauth/pull/323 | Critical | [x] | Fixes eventual-consistency race that can create hundreds of keys, causing severe latency and crashes on fresh Workers/KV deploys. |
 | 304 | https://github.com/anomalyco/openauth/pull/304 | High | [x] | Fixes implicit-flow RFC violation by removing `refresh_token` issuance and adding required token response fields. |
