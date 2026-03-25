@@ -4,7 +4,7 @@
 | 305 | https://github.com/anomalyco/openauth/pull/305 | Critical | [x] | Security fix for malformed `redirect_uri` bypass that could allow external redirects. |
 | 323 | https://github.com/anomalyco/openauth/pull/323 | Critical | [x] | Fixes eventual-consistency race that can create hundreds of keys, causing severe latency and crashes on fresh Workers/KV deploys. |
 | 304 | https://github.com/anomalyco/openauth/pull/304 | High | [x] | Fixes implicit-flow RFC violation by removing `refresh_token` issuance and adding required token response fields. |
-| 318 | https://github.com/anomalyco/openauth/pull/318 | High | [ ] | Adds required `token_type: Bearer` to auth-code and refresh-token responses for OAuth compliance and client compatibility. |
+| 318 | https://github.com/anomalyco/openauth/pull/318 | High | [x] | Adds required `token_type: Bearer` to auth-code and refresh-token responses for OAuth compliance and client compatibility. |
 | 103 | https://github.com/anomalyco/openauth/pull/103 | High | [ ] | Adds OAuth `state` verification to the Cloudflare API example; example-level CSRF protection fix. |
 | 325 | https://github.com/anomalyco/openauth/pull/325 | Medium | [ ] | Fixes examples/docs so valid sessions do not trigger unnecessary IdP redirects. |
 | 310 | https://github.com/anomalyco/openauth/pull/310 | Medium | [ ] | Fixes resend action naming so the UI correctly shows "Code resent to ...". |
