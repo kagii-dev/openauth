@@ -587,6 +587,37 @@ describe("refresh token", () => {
       "write",
     ])
   })
+
+  test("refresh callback reuse within interval returns a usable refresh token", async () => {
+    const issuerWithRefresh = issuer({
+      ...issuerConfig,
+      refresh: async (ctx, value) =>
+        ctx.subject("user", value.properties, { subject: value.subject }),
+    })
+    await createClientAndTokens(issuerWithRefresh)
+
+    let response = await requestRefreshToken(tokens.refresh, issuerWithRefresh)
+    expect(response.status).toBe(200)
+    const refreshed = await response.json()
+    expect(refreshed.token_type).toBe("Bearer")
+    const [, refreshedAccessPayload] = refreshed.access_token.split(".")
+
+    // A client retrying the same refresh (e.g. the first response was lost)
+    setSystemTime(Date.now() + 1000 * 30)
+    response = await requestRefreshToken(tokens.refresh, issuerWithRefresh)
+    expect(response.status).toBe(200)
+    const reused = await response.json()
+    const [, reusedAccessPayload] = reused.access_token.split(".")
+    expect(reused.refresh_token).toEqual(refreshed.refresh_token)
+    expect(reusedAccessPayload).toEqual(refreshedAccessPayload)
+
+    // The token handed out on reuse must itself be refreshable
+    response = await requestRefreshToken(
+      reused.refresh_token,
+      issuerWithRefresh,
+    )
+    expect(response.status).toBe(200)
+  })
 })
 
 describe("user info", () => {
