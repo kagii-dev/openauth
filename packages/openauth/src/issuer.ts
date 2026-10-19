@@ -1011,11 +1011,16 @@ export function issuer<
                       access: opts?.ttl?.access ?? ttlAccess,
                       refresh: opts?.ttl?.refresh ?? ttlRefresh,
                     },
+                    // Same as the fallback below: return the refresh token reserved by the previous
+                    // grant, so a reuse within the interval gets the token the first use stored.
+                    nextToken: payload.nextToken,
+                    timeUsed: payload.timeUsed,
                   },
                   { generateRefreshToken },
                 )
                 return c.json({
                   access_token: tokens.access,
+                  token_type: "Bearer",
                   refresh_token: tokens.refresh,
                   expires_in: tokens.expiresIn,
                 })
